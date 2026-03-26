@@ -69,18 +69,9 @@ Achieves 98/100 Google Lighthouse score. Optimizations include: lazy-loading for
 
 ---
 
-## 🚀 Getting Started
+## 🔒 Source Code
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/gajsin/synapse-hub.git
-   cd synapse-hub
-   ```
-2. Start a local server (or simply open `index.html`):
-   ```bash
-   npx serve .
-   ```
-
+> **Note:** This repository serves as a portfolio showcase. The full source code is closed/commercial, but the architecture and implementation details can be reviewed upon request during technical interviews.
 ---
 
 ## 📄 License
