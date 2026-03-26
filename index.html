@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synapse Hub — лендинг IT-агентства</title>
+    <meta name="description" content="Кейс: Разработка премиального лендинга для IT-агентства Synapse Hub. React 19, GSAP, Tailwind CSS, AI-чат, ROI-калькулятор, интерактивный pipeline.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-card: #161616;
+            --bg-card-hover: #1c1c1c;
+            --accent: #6366f1;
+            --accent-dim: #5558e6;
+            --accent-glow: rgba(99, 102, 241, 0.15);
+            --accent-glow-strong: rgba(99, 102, 241, 0.3);
+            --text-primary: #f1f1f1;
+            --text-secondary: #999999;
+            --text-muted: #5a5a5a;
+            --border: #222222;
+            --border-light: #2e2e2e;
+            --gradient-accent: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.08);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-xs: 6px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ===== TOP BANNER ===== */
+        .top-banner {
+            background: #111111;
+            padding: 14px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .top-banner h1 {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #999;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            padding: 80px 0 60px;
+            text-align: center;
+        }
+
+        .hero-text h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 56px;
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -2px;
+            margin-bottom: 24px;
+            color: #ffffff;
+        }
+
+        .hero-text .subtitle {
+            font-size: 17px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 32px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tech-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .tech-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #ccc;
+            letter-spacing: 0.3px;
+            transition: all 0.3s ease;
+        }
+
+        .tech-badge:hover {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.3);
+            color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        /* ===== SCREENSHOT FRAMES ===== */
+        .screenshot-frame {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-card), var(--shadow-glow);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
+            margin-top: 48px;
+        }
+
+        .screenshot-frame:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-card), 0 0 60px rgba(99, 102, 241, 0.12);
+        }
+
+        .screenshot-frame .frame-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .frame-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border-light);
+        }
+
+        .frame-dot.accent { background: var(--accent); }
+
+        .frame-title {
+            font-size: 11px;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            margin-left: 8px;
+        }
+
+        .screenshot-placeholder {
+            width: 100%;
+            background: var(--bg-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: var(--text-muted);
+            font-size: 14px;
+            position: relative;
+            overflow: hidden;
+            min-height: 250px;
+        }
+
+        .screenshot-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* ===== SECTION HEADERS ===== */
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 32px;
+        }
+
+        .section-label::before {
+            content: '◆';
+            font-size: 8px;
+        }
+
+        /* ===== FEATURES SECTION ===== */
+        .features-section {
+            padding: 40px 0 60px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px 28px;
+            transition: all 0.35s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-accent);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .feature-card:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-card);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--accent-glow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.65;
+        }
+
+        /* ===== SCREENS SECTION ===== */
+        .screens-section {
+            padding: 40px 0 60px;
+        }
+
+        .screens-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .screen-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: all 0.35s ease;
+        }
+
+        .screen-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-card), var(--shadow-glow);
+        }
+
+        .screen-card .frame-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .screen-card .screenshot-placeholder {
+            height: 480px;
+        }
+
+        .screen-label {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        .screen-label::before {
+            content: '◆';
+            font-size: 7px;
+        }
+
+        /* ===== STATS ROW ===== */
+        .stats-section {
+            padding: 40px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px 24px;
+            text-align: center;
+            transition: all 0.35s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 6px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* ===== ARCHITECTURE SECTION ===== */
+        .architecture-section {
+            padding: 40px 0 60px;
+        }
+
+        .arch-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .arch-card::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.06), transparent 70%);
+            pointer-events: none;
+        }
+
+        .arch-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+
+        .arch-layer-title {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .arch-layer-title::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            background: var(--accent);
+        }
+
+        .arch-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .arch-item:last-child {
+            border-bottom: none;
+        }
+
+        .arch-item-icon {
+            font-size: 16px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* ===== DESCRIPTION SECTION ===== */
+        .description-section {
+            padding: 40px 0 60px;
+        }
+
+        .desc-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .desc-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-accent);
+        }
+
+        .desc-card h3 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: #ffffff;
+        }
+
+        .desc-card p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            max-width: 700px;
+        }
+
+        .desc-card p + p {
+            margin-top: 16px;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-left {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .footer-tech {
+            display: flex;
+            gap: 8px;
+        }
+
+        .footer-badge {
+            padding: 5px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate {
+            opacity: 0;
+            animation: fadeInUp 0.7s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .hero-text h2 {
+                font-size: 40px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .screens-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .arch-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .footer-tech {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .hero-text h2 {
+                font-size: 32px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== TOP BANNER ===== -->
+    <div class="top-banner">
+        <h1>Synapse Hub — лендинг IT-агентства автоматизации</h1>
+    </div>
+
+    <!-- ===== HERO ===== -->
+    <div class="container">
+        <section class="hero">
+            <div class="hero-text animate delay-1">
+                <h2>Synapse<br>Hub</h2>
+                <p class="subtitle">
+                    Премиальный лендинг для IT-агентства, специализирующегося на бизнес-автоматизации, 
+                    AI-интеграциях и разработке Telegram-ботов. Кинематографная анимация, 
+                    интерактивный pipeline, ROI-калькулятор и встроенный AI-ассистент.
+                </p>
+                <div class="tech-badges">
+                    <span class="tech-badge">React 19</span>
+                    <span class="tech-badge">Vite</span>
+                    <span class="tech-badge">Tailwind CSS 3.4</span>
+                    <span class="tech-badge">GSAP 3</span>
+                    <span class="tech-badge">ScrollTrigger</span>
+                    <span class="tech-badge">Lucide React</span>
+                    <span class="tech-badge">Telegram Bot API</span>
+                </div>
+            </div>
+
+            <!-- Hero Screenshot -->
+            <div class="screenshot-frame animate delay-3">
+                <div class="frame-header">
+                    <div class="frame-dot"></div>
+                    <div class="frame-dot"></div>
+                    <div class="frame-dot accent"></div>
+                    <span class="frame-title">synapsehub.ru</span>
+                </div>
+                <div class="screenshot-placeholder">
+                    <img src="screenshot.jpg" alt="Synapse Hub — полный обзор сайта">
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ===== STATS ===== -->
+    <div class="container">
+        <section class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-card animate delay-1">
+                    <div class="stat-value">8+</div>
+                    <div class="stat-label">Секций</div>
+                </div>
+                <div class="stat-card animate delay-2">
+                    <div class="stat-value">15+</div>
+                    <div class="stat-label">GSAP-анимаций</div>
+                </div>
+                <div class="stat-card animate delay-3">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Интерактивных модуля</div>
+                </div>
+                <div class="stat-card animate delay-4">
+                    <div class="stat-value">A+</div>
+                    <div class="stat-label">Lighthouse Score</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ===== DESCRIPTION ===== -->
+    <div class="container">
+        <section class="description-section">
+            <div class="section-label animate">О проекте</div>
+            <div class="desc-card animate delay-1">
+                <h3>Задача</h3>
+                <p>
+                    Создать сайт-визитку для IT-агентства Synapse Hub, который не просто рассказывает об услугах, 
+                    а демонстрирует техническое превосходство через интерактивные элементы. Каждый скролл — 
+                    намеренный, каждая анимация — взвешенная и профессиональная.
+                </p>
+                <p>
+                    Дизайн-система «Silicon Void» — тёмная премиальная эстетика с глубоким фоном slate-950, 
+                    фиолетовым акцентом #6366f1, контрастной типографикой Inter + Instrument Serif + JetBrains Mono 
+                    и noise-текстурой через SVG feTurbulence.
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <!-- ===== FEATURES ===== -->
+    <div class="container">
+        <section class="features-section">
+            <div class="section-label animate">Ключевые секции</div>
+            <div class="features-grid">
+                <div class="feature-card animate delay-1">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Hero с двойной типографикой</h3>
+                    <p>Крупный заголовок sans + массивный serif italic. GSAP-анимация staggered fade-up. Интерактивное поле заявки прямо в Hero. Анимированные карточки: код, бот-чат, метрики.</p>
+                </div>
+                <div class="feature-card animate delay-2">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Интерактивный Pipeline</h3>
+                    <p>Пошаговый визуализатор процесса (Заявка → Аудит → Разработка → Запуск). Переключение контента в реальном времени. Анимированный бот-чат, граф данных, код-свитчер.</p>
+                </div>
+                <div class="feature-card animate delay-3">
+                    <div class="feature-icon">📊</div>
+                    <h3>ROI-калькулятор</h3>
+                    <p>Клиент вводит параметры бизнеса — калькулятор показывает экономию от автоматизации. Визуализация результатов, конверсия в заявку одним кликом.</p>
+                </div>
+                <div class="feature-card animate delay-1">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI-чат ассистент</h3>
+                    <p>Встроенный виджет чата с AI. Отвечает на вопросы посетителей о сервисах, ценах и сроках. Плавающая кнопка с анимацией.</p>
+                </div>
+                <div class="feature-card animate delay-2">
+                    <div class="feature-icon">💼</div>
+                    <h3>Портфолио кейсов</h3>
+                    <p>Карточки реальных проектов с описанием, стеком технологий и результатами. Hover-эффекты, accent-подсветка активного кейса.</p>
+                </div>
+                <div class="feature-card animate delay-3">
+                    <div class="feature-icon">💰</div>
+                    <h3>Тарифная сетка</h3>
+                    <p>Три тарифа с выделенным популярным планом: accent gradient, glow-тень, увеличенный масштаб. CTA-кнопки с magnetic-эффектом.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+
+    <!-- ===== ARCHITECTURE ===== -->
+    <div class="container">
+        <section class="architecture-section">
+            <div class="section-label animate">Архитектура и стек</div>
+            <div class="arch-card animate delay-1">
+                <div class="arch-grid">
+                    <div class="arch-layer">
+                        <div class="arch-layer-title">Frontend</div>
+                        <div class="arch-item"><span class="arch-item-icon">⚛️</span> React 19 (Vite)</div>
+                        <div class="arch-item"><span class="arch-item-icon">🎨</span> Tailwind CSS 3.4</div>
+                        <div class="arch-item"><span class="arch-item-icon">✨</span> GSAP 3 + ScrollTrigger</div>
+                        <div class="arch-item"><span class="arch-item-icon">🧩</span> Lucide React (иконки)</div>
+                    </div>
+                    <div class="arch-layer">
+                        <div class="arch-layer-title">Дизайн-система</div>
+                        <div class="arch-item"><span class="arch-item-icon">🌑</span> Silicon Void (Dark Premium)</div>
+                        <div class="arch-item"><span class="arch-item-icon">🔤</span> Inter + Instrument Serif</div>
+                        <div class="arch-item"><span class="arch-item-icon">💻</span> JetBrains Mono (данные)</div>
+                        <div class="arch-item"><span class="arch-item-icon">📐</span> Noise overlay (SVG feTurbulence)</div>
+                    </div>
+                    <div class="arch-layer">
+                        <div class="arch-layer-title">Интеграции</div>
+                        <div class="arch-item"><span class="arch-item-icon">📨</span> Telegram Bot API (формы)</div>
+                        <div class="arch-item"><span class="arch-item-icon">🤖</span> AI Chat Assistant</div>
+                        <div class="arch-item"><span class="arch-item-icon">📊</span> ROI Calculator Engine</div>
+                        <div class="arch-item"><span class="arch-item-icon">🎯</span> Google Fonts CDN</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <div class="container">
+        <footer class="footer">
+            <div class="footer-left">© 2026 Synapse Hub — Лендинг IT-агентства автоматизации</div>
+            <div class="footer-tech">
+                <span class="footer-badge">React 19</span>
+                <span class="footer-badge">Vite</span>
+                <span class="footer-badge">Tailwind CSS</span>
+                <span class="footer-badge">GSAP 3</span>
+                <span class="footer-badge">Telegram API</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ===== SCROLL ANIMATIONS ===== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.animate').forEach(el => {
+                el.style.animationPlayState = 'paused';
+                observer.observe(el);
+            });
+        });
+    </script>
+
+</body>
+</html>
