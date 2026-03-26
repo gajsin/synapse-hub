@@ -12,6 +12,12 @@
 
 ---
 
+
+
+## 🎨 Project Presentation
+
+![Full Showcase](f_61269c01cec96ea7.png)
+
 ## 📸 Overview
 
 ![Synapse Hub Cover](screenshot.jpg)
